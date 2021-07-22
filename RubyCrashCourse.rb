@@ -619,9 +619,10 @@ end
 
 say("Nick", 7.0, 2)
 
-
-# Return keyword is use to return a value from a method
-
+=begin 
+Return keyword is use to return a value from a method
+*** Any code in the method after a return statement will not execute, because a method stops executing once the return is executed.
+=end
 def sum(a,b)
    res = a+b
    return res 
@@ -630,4 +631,92 @@ end
 x = sum(5,24)
 
 puts x
+
+# you can also define multiple returns
+
+def sum(a,b,c)
+   return a*a, b*b, c*c
+end
+
+arr = sum(3,4,5)
+
+puts arr
+
+
+# Even when you do not explicitly include a return statement in your method, Ruby always returns the evaluated result of the last line of the method that is executed.
+
+def demo(a, b)
+   a = a-3
+   b = b-3
+end
+
+puts demo(5,6)
+
+# you can chain methods together
+x = 7
+
+def sum(a)
+   a+a
+end
+sum(2).times {puts sum(x)}
+
+# Can also pass methods as arugments to other methods
+
+def sum(a,b)
+   a+b
+end
+
+def mult(a,b)
+   a*b
+end
+
+x = mult(sum(2,3),sum(1,4))
+puts x
+
+
+=begin
+Variable Scope:
+Scope defines where in a program a variable is accessible.
+Ruby has four types of variable scope: local, global, instance and class.
+
+Local variables are local to the code construct in which they are declared. For example, a local variable declared in a method or within a loop cannot be accessed outside of that loop or method. Local variable names must begin with either an underscore or a lowercase letter.
+=end
+
+def sum(b)
+   a = 2 # <--- Local variable, lives within in the method and cannot be called outside it
+   puts a*b
+end
+
+=begin
+   Global variables in Ruby are accessible from anywhere in the Ruby program, regardless of where they are declared. Global variable names are prefixed with a dollar sign ($).
+
+   *** Use of global variables is strongly discouraged. The problem with global variables is that, not only are they visible anywhere in the code, but they can also be changed from anywhere in the application. This can result in hard to find bugs.
+=end
+
+$globalvar = 4 # This is a global Variable
+
+def change
+   $globalvar = 3 # Global variable is changed here
+end
+
+change
+puts $globalvar
+
+
+=begin
+A classic example of a method that is implemented recursively is the factorial method, which finds the product of all positive integers below a specified number.
+For example, 5! (5 factorial) is 5 * 4 * 3 * 2 * 1 (120). To implement this recursively, notice that 5! = 5 * 4!, 4! = 4 * 3!, 3! = 3 * 2!, and so on. Generally, n! = n * (n-1)!.
+Furthermore, 1! = 1. This is known as the base case, as it can be calculated without performing any more factorials.
+=end 
+
+def fact(n)
+   if n <= 1 
+      1
+   else
+      n * fact(n - 1)
+   end
+end
+
+puts fact(4)
+
 
