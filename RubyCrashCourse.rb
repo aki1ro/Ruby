@@ -581,3 +581,53 @@ def say
 end
 
 
+# A method declaration can include parameters, which you define inside parentheses after the method name. The parameter value itself is called an argument
+
+def add(x)
+   puts x+x
+end
+
+add(2)
+
+def add(x,y)
+   puts x+y
+end
+
+add(2,5)
+
+def add(x=7,b)
+   puts x+b
+end
+
+b = 3 
+
+add(b)
+
+def add x, h=8
+   puts x+h
+end
+
+x = 2
+
+add(x)
+
+# can also define methods to take any number of arguments using * if nothing is put into the argument for the * parameter than it will return nothing, this is also known as an optional parameter 
+
+def say(*p)
+   puts p
+end
+
+say("Nick", 7.0, 2)
+
+
+# Return keyword is use to return a value from a method
+
+def sum(a,b)
+   res = a+b
+   return res 
+end
+
+x = sum(5,24)
+
+puts x
+
