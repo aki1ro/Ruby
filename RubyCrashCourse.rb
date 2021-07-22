@@ -435,4 +435,149 @@ array.min returns the element with the minimum value.
 array.max returns the element with the maximum value.
 =end
 
+=begin
+Hashes (sometimes known as associative arrays, maps, or dictionaries) are similar to arrays in that they are an indexed collection of elements.
+However, while you index arrays with integers, you can index a hash with anything.
+That is very useful when you want to map values, for example: "name" => "David". Here, "name" is the index (also called the key) which is mapped to the value "David". So, hashes represent key=>value pairs.
+A hash is created with comma separated keys and values inside curly brackets
+
+*** Compared with arrays, hashes have one significant advantage: they can use any object as an index, even an array. For example: { [1,"jan"] => "January" }
+=end
+
+n = {"Name" => "Nick"}
+
+puts n["Name"]
+=begin
+Symbols are similar to strings, but they are immutable, meaning that they cannot be changed.
+A symbol is created using a colon and a name for example: a = :id
+
+^^^^ In the code above :id is a symbol. You can also think of :id as meaning the name of the variable id, and plain id as meaning the value of the variable.
+
+**** So why use symbols instead of strings? Using symbols not only saves time when doing comparisons, but also saves memory, because they are only stored once.
+
+=end
+
+n = {:name => "Nick", :age => 27, :gender => "male"}
+
+puts n[:name]
+
+n = {name:"Nick", age:27, gender:"male"}
+
+puts n[:gender]
+
+=begin
+There are useful methods available for manipulating hashes:
+hash.delete(key) removes the key-value pair from hash by key.
+hash.key(value) returns the key for the given value in hash, nil if no matching value is found.
+hash.invert creates a new hash, reversing keys and values from hash; that is, in the new hash, the keys from hash become values and values become keys.
+hash.keys returns a new array with keys from hash.
+hash.values returns a new array containing all the values of hash.
+hash.length returns the length of hash as an integer.   
+=end
+
+car = {brand:"Audi", model:"S6", color:"Black", numofwheels:4}
+
+car.delete(:numofwheels)
+
+puts car.values
+
+# Nested arrays
+
+arr = [[[1],2,3], [4,5,6]]
+
+puts arr[0][0][0]
+puts arr[0][1]
+
+cars = {
+   BMW: {make: "M550i", color: "Saphire Blue", price: "$96,000"},
+   Audi: {make: "RS7", color: "Space Gray", price: "$127,000"},
+   Mercedes: {make: "E63 AMG", color: "British Racing Green", price: "$132,000"}
+}
+
+puts cars[:BMW][:make]
+
+=begin
+Ruby provides more elegant looping methods called iterators. Iterators are used to create loops.
+The each iterator is one of the most used ones:
+=end
+
+names = ["Nick", "Mike", "Chris", "Tomas"]
+
+names.each do |x| # <------ block paramenter which takes form of the variables being itterated over
+   puts x
+end
+
+=begin
+The syntax might seem confusing at first, but you just need to remember the pipe symbols around the variable. The each iterator loops through all elements of the array and assigns the corresponding element to the variable inside the pipes with each iteration. This variable is called the block parameter.
+=end
+
+cars = {
+   BMW: {make: "M550i", color: "Saphire Blue", price: "$96,000"},
+   Audi: {make: "RS7", color: "Space Gray", price: "$127,000"},
+   Mercedes: {make: "E63 AMG", color: "British Racing Green", price: "$132,000"}
+}
+
+cars.each do |key, value|
+   puts "#{key}=>#{value}"
+end
+
+=begin 
+In the example above, key and value are variables that get assigned to the corresponding values of the hash elements at each iteration. You can use any name for your variables.
+
+The do and end keywords specify a block of code in Ruby.
+After the opening of the block, we have the block parameters within pipes ( | | ).
+Ruby provides a shorthand way of writing blocks: you can use curly braces to start and end code blocks.
+=end
+
+cars = {
+   BMW: {make: "M550i", color: "Saphire Blue", price: "$96,000"},
+   Audi: {make: "RS7", color: "Space Gray", price: "$127,000"},
+   Mercedes: {make: "E63 AMG", color: "British Racing Green", price: "$132,000"}
+}
+
+cars.each {|key, value| puts "#{key}:#{value}"}
+
+# The each iterator can also be used on ranges.
+# For strings, you can use the each_char iterator to iterate over the characters.
+
+=begin 
+There are also iterators available for numbers.
+The times iterator executes a loop the specified number of times
+=end
+
+2.times do
+   puts cars[:BMW]
+end
+
+# Letter Frequency, count the frequency of letters (number of occurrences) first we lower the case of the string to easily match letters with
+
+text = " I am learning Ruby, and it's similar yet differnet to Python"
+
+text.downcase!
+
+# next create the hash that will hold the letters using the  default method which is used to set the default value for the hash, meaning that any key that does not have a value assigned will be set to that value.
+
+freqs = {}
+freqs.default = 0
+
+# now we need ot iterate over each character in the string and calculate the number of occurrences in the has. We can use each_char iterator
+
+text.each_char  { |char| freqs[char] += 1}
+
+("a".."z").each {|x| puts "#{x} : #{freqs[x]}" }
+
+=begin 
+In the previous lessons we have seen some examples of methods, such as the reverse method for arrays.
+A method is a set of statements that perform a specific task.
+You can define your own methods to perform your desired tasks.
+The def keyword is used to define a method.
+
+*** The method name should start with a lowercase letter, so it will not be confused with constants.
+
+=end
+
+def say
+   puts "Hi"
+end
+
 
