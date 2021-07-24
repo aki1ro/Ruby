@@ -720,4 +720,240 @@ end
 puts fact(4)
 
 
+=begin
+You can think of classes as basic outlines of what an object should be made of and what it should be able to do. (For example, an object of class Car should have a color, make and model, and be able to move).
+A class in Ruby always starts with the keyword class followed by the name of the class. The name should always be in initial capitals. You terminate the class definition with the keyword end.
+
+There is a special initialize method available for classes which gets called when an object is created.
+
+The purpose of the initialize method is to initialize the class variables for a new object. (For example, when a Car object is created, the initialize method could set the number of tires to the value 4)
+
+*** The initialize method is known as the constructor in other object-oriented programming languages.
+
+=end
+
+class Person
+   def initialize
+      puts "Hi There"
+   end
+end
+
+=begin
+After the class and the initialize methods are defined, we can create objects of that class by using the new method. The method new is predefined in the Ruby library and does not need to be added to your class definition.
+=end
+
+class Person
+   def initialize
+      puts "Hi There"
+   end
+end
+
+p1 = Person.new
+p2 = Person.new
+
+=begin Objects are also called instances of a class. The process of creating objects of a class is called instantiation.
+
+
+*** Note that in computing objects aren't always representative of physical items. For example, a programming object can represent a date, a time, and a bank account.
+=end
+
+=begin 
+An instance variable is one type of variable defined in a class.
+Each object of a class has a separate copy of the instance variables.
+Instance variables are preceded by the at sign (@) followed by the variable name (for example: @name)
+We can, for example, pass a parameter to the initialize method and assign it to an instance variable for a new object:
+=end
+
+class Person
+  def initialize(name)
+   @name = name
+  end
+end
+
+p1 = Person.new("Nick")
+p2 = Person.new("Mike")
+
+=begin 
+*** You might wonder why we don't use local variables instead of instance variables. We need instance variables because their scope is the entire object, meaning that they are accessible inside all the methods for the object, opposed to local variables, which are accessible only within the scope they are declared, such as a single method.
+=end
+
+# A class can multiple instance variable
+
+class Car
+   def initialize(brand, model, year)
+      @brand = brand
+      @model = model
+      @year = year 
+      puts "#{brand}, #{model}, #{year}"
+   end
+end
+
+c1 = Car.new("BMW", "M550i", 2021)
+c2 = Car.new("Audi", "RS7", 2021)
+
+=begin
+In the real world, objects behave in their own way. A car moves, a phone rings, and so on.
+The same applies to programming objects. Behavior is specific to the object's type and is defined by methods in the class.
+You can declare instance methods that are available to an object of the class.
+=end
+
+class Car
+   def initialize(brand, model, year)
+      @brand = brand
+      @model = model
+      @year = year
+   end
+    def readout
+       @brand
+    end
+end
+
+c1 = Car.new("BMW", "M550i", 2022)
+c2 = Car.new("Mercedes", "E63 AMG", 2021)
+
+puts c1.readout
+puts c2.readout
+
+=begin 
+Getter methods are used to access the instance variable. If we want to change the value of the instance variables, we need setter methods.
+Ruby provides a special syntax for defining setter methods: the method name is followed by an equal sign (=).
+=end
+
+class Car
+   def initialize(brand, model, year)
+      @brand = brand
+      @model = model
+      @year = year
+   end
+   def set_name=(model)
+      @model = model
+   end
+    def readout
+       print "#{@brand} #{@model} #{@year}"
+    end
+end
+
+c1 = Car.new("BMW", "M550i", 2022)
+c2 = Car.new("Mercedes", "E63 AMG", 2021)
+
+puts c1.readout
+c1.set_name = "M5"
+puts c1.readout
+
+# When you see this code, just realize there's a method called set_name= working behind the scenes.
+
+=begin 
+Ruby has a built-in way to automatically create these getter and setter methods using the attr_accessor method.
+The attr_accessor method takes a symbol of the instance variable name as an argument, which it uses to create getter and setter methods.
+=end
+
+class Car
+   attr_accessor :model 
+
+   def initialize(model)
+      @model = model
+   end
+end
+
+c = Car.new("M5")
+c.model = "M550i"
+puts c.model
+
+=begin 
+That one line replaced two accessor method definitions.
+Ruby also provides the attr_reader and attr_writer methods in case only a getter or setter method is needed for the instance variable.
+
+*** We can pass multiple symbols to the attr_accessor, attr_reader and attr_writer methods. For example: attr_accessor :name, :height, :weight
+=end 
+
+=begin
+Class methods are methods we can call directly on the class itself, without having to instantiate any objects.
+This can be useful when there is no logical need to create an object of the class, such as when a class is used to group similar methods and functionality (like mathematical operations).
+
+*** Remember, when used inside of instance methods, self is representing the current instance (object) of that class.
+When defining class methods, self is referring to the class itself, and not to an instance of the class.
+
+
+=end 
+
+class Car
+   def self.info
+      puts "A car"
+   end
+end
+
+Car.info
+
+=begin
+Class variables are accessible to every object of a class. A class variable belongs to the class, not the objects.
+You declare a class variable using two @ signs, for example @@name.
+
+*** Class variables are usually used when you need information about the class, not the individual objects.
+
+=end
+
+class Car
+   @@count = 0
+   def initialize
+      @@count += 1
+   end
+   def self.get_count
+      @@count
+   end
+end
+
+c1 = Car.new
+c2 = Car.new
+
+puts Car.get_count 
+
+=begin 
+A class can also contain constants. Remember, constant variables do not change their value and start with a capital letter. It is common to have uppercase names for constants
+
+You can access constants using the class name, followed by two colon symbols (::) and the constant name
+=end
+
+class Calc
+   PI = 3.14
+end
+
+puts Calc::PI
+
+=begin
+The to_s method comes built-in with all classes. It gets called when you output the object
+
+When we call puts p, Ruby automatically calls the to_s method for the object p, so puts p is the same as puts p.to_s
+
+*** By default, the to_s method prints the object's class and an encoding of the object id.
+=end
+
+
+class Car
+   #some code
+end
+
+c = Car.new
+puts c
+
+=begin 
+We can define our own to_s method for a class and add custom implementation to it.
+
+*** Defining the to_s method makes it easier and shorter to output the information of an object in the format needed, as opposed to defining a custom method and calling it from an object.
+When you define the to_s method you call puts on your object (puts obj), where with a custom method you have to explicitly call it from the object (puts obj.info).
+=end 
+
+class Car
+   def initialize(make, model, year)
+      @make = make
+      @model = model
+      @year = year
+   end
+   def to_s
+      "The make is a #{@year}, #{@make}, model #{@model}"
+   end
+end
+
+c = Car.new("Audi", "RS7", 2022)
+puts c
+
 
