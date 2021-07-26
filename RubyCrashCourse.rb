@@ -956,4 +956,187 @@ end
 c = Car.new("Audi", "RS7", 2022)
 puts c
 
+=begin 
+Inheritance is when a class receives, or inherits, attributes and behavior from another class. The class that is inheriting behavior is called the subclass (or derived class) and the class it inherits from is called the superclass (or base class).
+
+*** The < symbol is used to inherit a class from another class.
+=end
+
+class Car
+   def initialize(model, year)
+      @year = year
+      @model = model 
+   end
+   def readout
+      puts "Your model is #{@model}, year #{@year}"
+   end
+end
+
+class BMW < Car
+end
+
+c = BMW.new("M550i", 2022)
+c.readout
+
+# BMW inehrits the readout method, but has it's own method of engine and attribute(instance variable) of body type
+
+class Car
+   def initialize(model, year)
+      @model = model
+      @year = year
+   end
+   def readout
+      puts "Your model is #{@model}, year #{@year}"
+   end
+end
+
+class BMW < Car
+   attr_accessor :body_type
+   def engine
+      if @model == "M550i"
+         puts "N63 4.4L V8"
+      elsif @model == "M5"
+         puts "S63 4.4.L V8"
+      end
+   end
+end
+
+c = BMW.new("M550i", 2022)
+c2 = BMW.new("M5", 2022)
+c.body_type = "Sedan"
+c.engine
+c2.engine
+
+=begin 
+Inheritance is a great way to remove duplication in your code by writing the shared and common functionality in the superclass and then adding individual functionality in the subclasses.
+You can have multiple levels of inheritance
+
+*** However, Ruby does not support multiple inheritance, meaning you cannot inherit a class simultaneously from multiple classes. (A class cannot have multiple superclasses)
+=end
+
+class Car
+end
+class BMW < Car
+end
+class M550i < BMW
+end
+
+
+=begin
+Ruby has a built-in method called super, which is used to call methods from the superclass.
+When you call super in a method of the subclass, the method of the same name gets called from the superclass.
+=end
+
+class Car
+   def initialize(model, year)
+      @model = model
+      @year = year
+   end
+    def engine
+      puts "Random Engine"   
+   end
+end
+
+class BMW < Car
+   def engine
+      super
+      if @model == "M550i"
+         puts "N63 4.4L V8"
+      elsif @model == "M5"
+         puts "S64 4.4L V8"
+      end
+   end
+end
+
+c = BMW.new("M550i", 2022)
+c.engine
+
+=begin
+super is more commonly used in the initialize method.
+
+*** In the example we used super for a simple assignment. Imagine having a complex program with complex calculations and operations being carried out. That's where the real benefits of "not repeating yourself" come in, and calling the super where applicable is one way of achieving it.
+=end
+
+
+class Car
+   def initialize(model)
+      @model = model
+   end
+end
+
+class BMW < Car
+   def initialize(model, year)
+      super(model)
+      @year = year
+   end
+   def to_s
+      "#{@model}, and year #{@year}"
+   end
+end
+
+c = BMW.new("M550i", 2022)
+puts c
+
+
+=begin 
+To control visibility, Ruby provides the public, private, and protected access modifiers.
+By default, all class methods (except initialize) are public, meaning that they are accessible from both inside and outside of the class.
+To make a method accessible only from inside the class, we can use the private access modifier
+
+*** When the reserved word private is used in a program, anything below it in the class is private (unless public or protected is placed after it to negate it).
+Access modifiers can be applied only to methods. Instance variable are always private.
+=end
+
+class Car
+   def initialize(make, model)
+      @model = model
+      @make = make
+   end
+   def show 
+      puts "Model is #{@model}, make is #{@make}, and engine is #{engine}"
+   end
+
+   private
+   def engine
+      if @model == "M550i"
+         @model = "N63 4.4L V8"
+      end
+   end
+end
+
+c = Car.new("BMW", "M550i")
+c.show
+
+=begin 
+Another way of grouping methods together are modules.
+A module is a collection of methods that can be used in other classes (think about them as libraries providing common functionality).
+Modules are defined using the module keyword followed by the module name, which should start with a capital letter.
+
+use the include method to add in modules into classes
+=end
+
+
+module V8
+   def engine
+   puts "These Cars got V8's"
+   end
+end
+
+class Vehicles
+end
+
+class M_550i < Vehicles
+   include V8
+end
+
+class M_5 < Vehicles
+   include V8
+end
+
+class M340i < Vehicles
+end
+
+c = M_550i.new
+c.engine
+
 
