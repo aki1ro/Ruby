@@ -1,3 +1,4 @@
+# Ruby ignores whitespaces in expressions unless they’re a part of a string. For example, an expression like 5 + 5 is the same as 5+5 and would be interpreted as such.
 puts "hellow world" # Creates new line after text 
 
 p "Hellow world" # Does create new line as well and prints arrays in brackets
@@ -1113,6 +1114,10 @@ A module is a collection of methods that can be used in other classes (think abo
 Modules are defined using the module keyword followed by the module name, which should start with a capital letter.
 
 use the include method to add in modules into classes
+
+*** A common naming convention for Ruby is to use the "able" suffix on whatever verb describes the behavior that the module is modeling, like Walkable, Swimmable, Runnable, etc.
+Not all modules are named in this manner, however, it is quite common.
+
 =end
 
 
@@ -1140,3 +1145,413 @@ c = M_550i.new
 c.engine
 
 
+=begin 
+As you may recall, Ruby does not allow a class to inherit from multiple classes.
+However, a class can mix in multiple modules. Modules used this way are known as "mixins".
+So, basically, a class can have multiple mixins
+
+*** Mixins give you a great, controlled way of adding functionality to classes.
+
+It is important to remember the following:
+1. You can only inherit from one class. But you can mix in as many modules as you'd like.
+
+2. If it's an "is-a" relationship, choose class inheritance. If it's a "has-a" relationship, choose modules. Example: a plane "is a" vehicle; a plane "has an" ability to fly.
+
+3. You cannot instantiate modules (i.e., an object cannot be created from a module).
+Modules are used only for grouping common methods together.
+Classes are about objects; modules are about methods.
+
+The true power of mixins comes out when the code in the mixin starts to interact with code in the class that uses it. Ruby has a number of predefined mixins ready for you to use.
+Let's take the standard Ruby mixin Comparable as an example. The Comparable mixin can be used to add the comparison operators (<, <=, ==, >=, and >) to a class.
+For this to work, Comparable assumes that any class that uses it defines the operator <=>.
+So, as a class writer, you define the one method, <=>, include Comparable, and get six comparison functions as a result!
+Let's try this with our Cat class, by making the cats comparable based on their age.
+
+=end 
+
+class Cat
+   attr_accessor :name, :age
+   include Comparable
+   def initialize(n, a)
+       self.name = n
+       self.age = a
+   end
+   def <=>(other)
+       self.age <=> other.age
+   end
+end
+
+c1 = Cat.new("Bob", 3)
+c2 = Cat.new("Lucy", 7)
+
+puts c1 < c2
+
+=begin
+You can use namespacing to organize similar classes in module 
+
+We can call classes in the module by appending the class name to the module name with two colons(::)
+
+*** The advantages of namespacing classes:
+It becomes easy for us to recognize related classes in our code.
+It reduces the likelihood of our classes colliding with other similarly named classes in our code. We can have the same class names across different modules.
+=end
+
+module Mammal
+   class Dog
+       def speak
+           puts "Woof!"
+       end
+   end
+
+   class Cat
+       def speak
+           puts "Meow"
+       end
+   end
+end
+
+a = Mammal::Dog.new
+b = Mammal::Cat.new
+
+a.speak
+b.speak
+
+
+=begin
+Another use for modules is as containers for methods.
+
+The code above defines a module called MyMath, which includes a constant called PI, and three class methods. The methods inside a module are defined as class methods (note the self keyword), and we call them using the dot syntax.
+You can call the methods using two colon syntax (::) as well (MyMath::factorial(8)), but the dot syntax is preferred.
+
+*** Again, the advantages of using modules to group methods includes preventing name collisions, meaning that we can have the same method names across multiple modules.
+=end
+
+
+module MyMath
+   PI = 3.14
+   def self.square(x)
+       x*x
+   end
+   def self.negate(x)
+       -x
+   end
+   def self.factorial(x)
+        (1..x).inject(:*) || 1
+   end
+end
+
+puts MyMath.factorial(8)
+
+=begin
+In some cases, there is no need for defining a fully structured class. Sometimes we need just a group of attributes bundled together (for example, defining points in a 2D space using x and y coordinates).
+We could, of course, create a separate class with all the instance variables and methods, but Ruby provides a shortcut to bundle a number of attributes together called a Struct
+
+
+In the code below, Point is a Struct, having two attribute accessors: x and y. Struct automatically creates its initialize method for the defined accessors, so now we can use Points just like a class, instantiating different objects from it.
+
+
+
+*** Struct is a built-in Ruby class and makes it shorter to define simple classes, accessors, and their initialize methods.
+=end
+
+Point = Struct.new(:x, :y)
+
+origin = Point.new(0,0)
+dest = Point.new(15, 42)
+
+puts dest.y
+
+=begin 
+OpenStruct (or OStruct) acts very similarly to Struct, except that it doesn't have a defined list of attributes.
+To use OStruct, we need to include the corresponding library using the require statement.
+
+*** OStruct isn't as fast as Struct, but it is more flexible.
+=end 
+
+require "ostruct"
+
+person = OpenStruct.new
+person.name = "John"
+person.age = 42
+person.salary = 250
+
+puts person.name
+
+=begin 
+We can also initialize an OStruct using a hash.
+
+Struct and OStruct provide a simple way to create data structures that have the behavior of a class.
+=end
+
+require "ostruct"
+
+person = OpenStruct.new(name:"John", age:42, salary:250)
+
+puts person.name
+
+=begin 
+Ruby provides a number of standard built-in classes that make our life a lot easier by providing useful methods for manipulating data.
+Some of the classes in previous lessons include Array, String and Struct.
+Another useful class is the Math class, which provides methods to perform mathematical operations.
+=end
+
+#square root
+puts Math.sqrt(9)
+
+#pi constant
+puts Math::PI
+
+#trigonometry (sin, cos, tan)
+puts Math::cos(0)
+
+
+# The Time class represents dates and times in Ruby.
+
+#current time
+t = Time.now
+puts t.inspect
+
+#year, month, day
+puts t.year
+puts t.month
+puts t.day
+
+#custom date
+t = Time.new(1988, 6, 10)
+
+#day of week: 0 is Sunday
+puts t.wday
+
+#day of year
+puts t.yday
+
+=begin 
+Ruby provides the ability to take a block of code, wrap it up in an object (called a proc), store it in a variable, and run the code in the block whenever you feel like (more than once, if you want).
+
+We created a Proc that takes a parameter and outputs a greeting, and assigned it to the greet variable.
+We run the code in the proc using the call method.
+
+*** The code between the do and end keywords can include any number of operations.
+=end 
+
+greet = Proc.new do |x|
+   puts "Welcome #{x}"
+end
+
+greet.call "David"
+greet.call "Amy"
+
+=begin
+Procs are very similar to methods. They perform operations and can include parameters.
+What make Procs really powerful and unique is the ability to pass them into methods, because procs are actually objects.
+
+We have defined two procs and a method, that takes an array and a proc as its parameters. For each item in the array it calls the proc. Now, greet and goodbye are objects that contain the corresponding blocks of code.
+We can call the say method and pass our proc objects as parameters
+
+We can pass to our methods as many procs as we want.
+
+*** Using procs gives the added flexibility to be able to reuse code blocks in more than one place without having to type them out every time. Procs basically take blocks of code and embed them in an object, allowing them to be reused and passed around.
+
+=end
+
+greet = Proc.new do |x|
+   puts "Welcome #{x}"
+end
+
+goodbye = Proc.new do |x|
+   puts "Goodbye #{x}"
+end
+
+def say(arr, proc)
+   arr.each { |x| proc.call x}
+end
+   
+people = ["David", "Amy", "John"]
+say(people, greet)
+say(people, goodbye)
+
+=begin 
+Let's create a program that counts the execution time of a block of code.
+With that tiny calc method, we can now easily calculate the execution time of any Ruby code!
+=end
+
+def calc(proc)
+    start = Time.now
+    proc.call
+    dur = Time.now - start
+end
+
+someProc = Proc.new do
+    num = 0
+    1000000.times do
+      num = num + 1
+    end
+end
+
+puts calc(someProc)
+
+=begin 
+Lambdas are a variation of Procs. A lambda is actually an instance of the Proc class.
+
+*** In other programming languages, a lambda is commonly referred to as an anonymous function.
+
+Lambdas as very similar to procs. However, there are some important differences.
+The first difference between procs and lambdas is how arguments are handled.
+Lambdas check the number of arguments, while procs do not.
+
+When a lambda expects an argument, you need to pass those arguments or an Error will occur. However, in the case of the Proc, if the argument is not passed it automatically defaults to nil.
+
+*** A second difference between a lambda and a Proc is how the return statement is handled.
+When a lambda encounters a return statement it returns execution to the enclosing method.
+However, when a Proc encounters a return statement it jumps out of itself, as well as the enclosing method.
+
+
+=end 
+
+# Alternative syntax: talk = ->() {puts "Hi"}
+talk = lambda {puts "Hi"}
+talk.call
+
+talk = lambda { |x| puts "Hello #{x}" }
+talk_proc = Proc.new { |x| puts "Hello #{x}" }
+
+talk.call "David"
+talk_proc.call "Amy"
+
+
+=begin 
+A more permanent form of input and output is files.
+Ruby allows us to easily create and work with files by using the built-in File class.
+
+The code below creates a file named "test.txt" with the mode w+ for read and write access to the file.
+Note that the file will be created in the same directory as our program.
+Now we can use our file object to perform different operations. After using a file, it must be closed using the close method
+
+*** It is necessary to close open files so they no longer continue to occupy space in memory.
+=end 
+
+# file = File.new("test.txt", "w+")
+
+# file.close
+
+=begin
+Ruby supports the following file modes:
+r read-only, starts at beginning of file (default mode).
+r+ read-write, starts at beginning of file.
+w write-only, truncates existing file to zero length or creates a new file for writing.
+w+ read-write, truncates existing file to zero length overwriting existing data or creates a new file for reading and writing.
+a write-only, appends to end of file if file exists, otherwise creates a new file for writing.
+a+ read-write, appends or reads from end of file if file exists, otherwise creates a new file for reading and writing.
+
+*** When the open mode is read only, the mode cannot be changed to writable. Similarly, the open mode cannot be changed from write only to readable.
+=end
+
+# How to open existing files
+
+file = File.open("filename", "w+") 
+
+=begin 
+The puts and write methods can be used for writing content to a file.
+The difference between the two is that puts adds a line break to the end of strings, while write does not.
+
+*** Remember to close the file after performing the file operations.
+=end
+
+file = File.new("test.txt", "w+")
+file.puts("some text")
+file.close
+
+=begin
+If we want to write to an existing file, we can use a block of code to perform the write operation.
+With this code Ruby will automatically close the file.
+
+*** This shorter way makes sure the file closes at the end of the block.
+
+=end
+
+File.open("test.txt", "a+") {
+   |file| file.puts("I know Ruby!!") 
+ }
+
+
+# To read the entire contents of a file the File.read method can be used.
+
+puts File.read("test.txt")
+
+
+f = File.new("a.txt", "w+")
+f.puts("1")
+f.write("2")
+f.puts("3")
+f.close
+puts File.read("a.txt")
+
+=begin
+We can also read the file contents line-by-line using the readlines method.
+
+*** The readlines method reads the entire file based on individual lines and returns those lines in an array.
+=end
+
+File.open("test.txt", "a+") {
+   |file| file.puts("a line of text")
+   file.puts("another line of text")
+}
+
+File.readlines("test.txt").each { |line|
+   puts " --- #{line}"
+}
+
+=begin
+We can delete a file using the File.delete method.
+
+*** Be careful, as this command deletes the file permanently.
+=end 
+
+File.delete("test.txt","a.txt")
+
+
+=begin 
+When working with files, it is important to first check if the file exists in order to prevent an error.
+The file? method provides an easy way of checking if the file exists.
+
+*** File.file? returns true if the file exists, and false if it does not.
+=end
+
+File.open("test.txt") if File.file?("text.txt")
+
+puts File.file?("test.txt")
+
+=begin 
+Ruby provides some useful methods to get relevant information about a file.
+The size method returns the size of the file.
+The zero? method returns true if the named file exists and has a zero size (is empty).
+=end
+
+f = File.new("test.txt", "w+")
+f.puts("some file content")
+
+puts f.size
+
+f.close
+
+puts File.zero?("test.txt")
+
+File.delete("test.txt")
+
+# We can also check whether the file is writable, readable or executable
+f = File.new("test.txt", "w+")
+f.puts("some content")
+f.close
+
+puts File.readable?("test.txt")
+puts File.writable?("test.txt")
+puts File.executable?("test.txt")
+
+File.delete("test.txt")
+
+=begin 
+Ruby comes with a built-in HTTP client net/http that can be used to send any kind of HTTP request you may need. You need to require the net/http client to work with it
+=end 
+require 'net/http'
+http_response = Net::HTTP.get_response('www.google.com', '/')
+puts http_response.code
